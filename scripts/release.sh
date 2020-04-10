@@ -17,13 +17,20 @@ gpg --homedir $MAVEN_GNUPGHOME --verify target/*.pom.asc
 
 ./mvnw clean -B -P release deploy
 
-docker build -t yogendra/api-demo:${newVersion} -t yogendra/api-demo:latest --build-arg JAR_FILE=target/api-demo-${newVersion}.jar .
+docker build \
+  -t yogendra/api-demo:${newVersion} \
+  -t yogendra/api-demo:latest \
+  --build-arg JAR_FILE=target/api-demo-${newVersion}.jar \
+  .
+
+
 docker push yogendra/api-demo:${newVersion}
 docker push yogendra/api-demo:latest
 
 git add .
 git commit -m "Release ${newVersion}"
 git tag ${newVersion}
+git push
 git push --tags
 
 popd
