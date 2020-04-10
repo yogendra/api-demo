@@ -13,11 +13,11 @@ pushd $PROJECT_ROOT
 
 ./mvnw clean -B -P release install
 
-gpg --verify target/*.pom.asc
+gpg --homedir $MAVEN_GNUPGHOME --verify target/*.pom.asc
 
-./mvnw clean -B P release deploy
+./mvnw clean -B -P release deploy
 
-docker build -t yogendra/api-demo:${newVersion} -t yogendra/api-demo:latest --build-arg target/api-demo-${newVersion}.jar .
+docker build -t yogendra/api-demo:${newVersion} -t yogendra/api-demo:latest --build-arg JAR_FILE=target/api-demo-${newVersion}.jar .
 docker push yogendra/api-demo:${newVersion}
 docker push yogendra/api-demo:latest
 
