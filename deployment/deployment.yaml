@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api-demo
+  name: api-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-demo
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: api-demo
+    spec:
+      containers:
+        - image: yogendra/api-demo:latest
+          name: api-demo
+          resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: api-demo
+  name: api-demo
+spec:
+  type: ClusterIP
+  ports:
+    - name: app
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: api-demo

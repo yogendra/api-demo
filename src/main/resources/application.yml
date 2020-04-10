@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: api-demo
+  jpa:
+    hibernate:
+      ddl-auto: update
+  security:
+    user:
+      name: yrampuria
+      password: keepitsimple
+logging:
+    level:
+      me: info
+
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+    jmx:
+      exposure:
+        include: '*'

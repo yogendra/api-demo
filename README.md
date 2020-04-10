@@ -9,6 +9,30 @@ cd apidemo
 
 ```
 
+
+### Testing Prometheus
+
+-   Run prometheus container locally
+
+    ```bash
+    docker run -d --rm\
+        --add-host hostmachine:$(ipconfig getifaddr en0) \
+        -p 9090:9090 \
+        -v $PWD/src/test/resources/prometheus.yml:/etc/prometheus/prometheus.yml \
+        --name prometheus \
+        --hostname prometheus \
+        prom/prometheus \
+        --config.file=/etc/prometheus/prometheus.yml
+    ```
+
+- Testing grafana locally
+    ```bash
+    docker run --rm -d \
+        --name=grafana \
+        --link prometheus:prometheus \
+        -p 3000:3000 \
+        grafana/grafana 
+    ```
 ### Reference Documentation
 
 For further reference, please consider the following sections:
