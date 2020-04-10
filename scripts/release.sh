@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT=$( cd `dirname $0`/..; pwd)
+export newVersion=$1
+[[ -z $newVersion ]] && echo "Version not provided" && exit 1
+
 echo PROECT_ROOT=$PROJECT_ROOT
 pushd $PROJECT_ROOT
-export newVersion=$1
 
 ./mvnw versions:set \
   -DnewVersion=${newVersion} \
