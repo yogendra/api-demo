@@ -10,29 +10,41 @@ cd apidemo
 ```
 
 
-### Testing Prometheus
+## Monitoring
 
--   Run prometheus container locally
+Test application monitoring using local Prometheus and Grafana.
+
+![](monitoring/grafana.png)
+
+-   Run Prometheus locally
 
     ```bash
     docker run -d --rm\
         --add-host hostmachine:$(ipconfig getifaddr en0) \
         -p 9090:9090 \
-        -v $PWD/src/test/resources/prometheus.yml:/etc/prometheus/prometheus.yml \
+        -v $PWD/src/test/resources/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
         --name prometheus \
         --hostname prometheus \
         prom/prometheus \
         --config.file=/etc/prometheus/prometheus.yml
     ```
 
-- Testing grafana locally
+- Run Grafana locally
     ```bash
     docker run --rm -d \
         --name=grafana \
         --link prometheus:prometheus \
+        -v $PWD/src/test/resources/grafana/dashboards:/var/lib/grafana/dashboards \
+        -v $PWD/src/test/resources/grafana/provisioning:/etc/grafana/provisioning \
+        -v $PWD/src/test/resources/grafana/config.ini:/etc/grafana/config.ini \
         -p 3000:3000 \
         grafana/grafana 
     ```
+
+
+## Logging
+
+
 ### Reference Documentation
 
 For further reference, please consider the following sections:
