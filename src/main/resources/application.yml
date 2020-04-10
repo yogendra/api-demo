@@ -24,3 +24,7 @@ management:
     jmx:
       exposure:
         include: '*'
+  info:
+    git:
+      enabled: true
+      mode: full
