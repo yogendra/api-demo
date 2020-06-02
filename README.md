@@ -22,7 +22,7 @@ Test application monitoring using local Prometheus and Grafana.
     docker run -d --rm\
         --add-host hostmachine:$(ipconfig getifaddr en0) \
         -p 9090:9090 \
-        -v $PWD/src/test/resources/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
+        -v $PWD/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
         --name prometheus \
         --hostname prometheus \
         prom/prometheus \
@@ -34,9 +34,9 @@ Test application monitoring using local Prometheus and Grafana.
     docker run --rm -d \
         --name=grafana \
         --link prometheus:prometheus \
-        -v $PWD/src/test/resources/grafana/dashboards:/var/lib/grafana/dashboards \
-        -v $PWD/src/test/resources/grafana/provisioning:/etc/grafana/provisioning \
-        -v $PWD/src/test/resources/grafana/config.ini:/etc/grafana/config.ini \
+        -v $PWD/monitoring/grafana/dashboards:/var/lib/grafana/dashboards \
+        -v $PWD/monitoring/grafana/provisioning:/etc/grafana/provisioning \
+        -v $PWD/monitoring/grafana/config.ini:/etc/grafana/config.ini \
         -p 3000:3000 \
         grafana/grafana 
     ```
