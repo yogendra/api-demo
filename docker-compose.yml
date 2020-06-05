@@ -1,0 +1,74 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: build.Dockerfile
+    ports:
+      - 8080:8080
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: app
+
+  prometheus:
+    image: prom/prometheus:v2.18.1
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    ports:
+      - 9090:9090
+    restart: always
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+
+  grafana:
+    image: grafana/grafana:6.7.4-ubuntu
+    user: "472"
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    restart: always
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/:/etc/grafana/provisioning/
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/config.ini:/etc/grafana/config.ini
+
+  fluentd:
+    build:
+      context: ./monitoring/fluentd
+    ports:
+      - 24224:24224
+      - 24224:24224/udp
+    restart: always
+    volumes:
+      - ./monitoring/fluentd/fluentd/etc:/fluentd/etc
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    environment:
+      - "discovery.type=single-node"
+    ports:
+      - 9200:9200
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.2.0
+    ports:
+      - 5601:5601
+
+volumes:
+  elastic_data:
+  prometheus_data:
+  grafana_data:
