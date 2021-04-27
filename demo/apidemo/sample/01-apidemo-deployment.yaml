@@ -16,9 +16,6 @@ spec:
     spec:
       containers:
         - image: docker.io/yogendra/api-demo:latest
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 0
           name: apidemo
           ports:
             - name: http
