@@ -1,6 +1,6 @@
 pipeline {  
   environment { 
-    registry = "yogendra/tmc-cluster-autoscaler"
+    registry = "ghcr.io/yogendra/api-demo"
     build_id = "$NODE_NAME-$JOB_NAME-$BUILD_NUMBER-$BUILD_ID"
   }  
   agent any  
