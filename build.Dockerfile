@@ -10,4 +10,5 @@ RUN mvn clean package
 FROM adoptopenjdk/openjdk11:jre as runtime
 EXPOSE 8080
 COPY --from=build /build/target/api-demo-*.jar /app.jar
+USER nobody
 CMD [ "java" , "-jar" ,"/app.jar"]
