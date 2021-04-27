@@ -2,21 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: apidemo
-  name: apidemo
+    app: api-demo
+  name: api-demo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: apidemo
+      app: api-demo
   template:
     metadata:
       labels:
-        app: apidemo
+        app: api-demo
     spec:
       containers:
-        - image: docker.io/yogendra/api-demo:latest
-          name: apidemo
+        - image: ghcr.io/yogendra/api-demo:latest
+          name: api-demo
           ports:
             - name: http
               protocol: TCP
