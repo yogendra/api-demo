@@ -1,0 +1,24 @@
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: apidemo
+  labels:
+    app: apidemo
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - secretName: apidemo-https-secret
+      hosts:
+        - apidemo.techtalk.cna-demo.ga
+  rules:
+    - host: apidemo.techtalk.cna-demo.ga
+      http:
+        paths:
+          - backend:
+              serviceName: apidemo
+              servicePort: http

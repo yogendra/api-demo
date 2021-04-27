@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: apidemo
+  name: apidemo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apidemo
+  template:
+    metadata:
+      labels:
+        app: apidemo
+    spec:
+      containers:
+      - image: docker.io/yogendra/api-demo:latest
+        name: apidemo
+        ports:
+        - name: http
+          protocol: TCP
+          containerPort: 8080
+        resources: 
+          requests:
+            memory: "720Mi"
+            cpu: "500m"
+          limits:
+            memory: "2000Mi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apidemo
+spec:
+  type: ClusterIP
+  selector:
+    app: apidemo
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: http
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: apidemo
+  namespace: apidemo
+  labels:
+    app: apidemo
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - secretName: apidemo-https-secret
+      hosts:
+        - apidemo.apps.demo.wepositive.org
+  rules:
+    - host: apidemo.apps.demo.wepositive.org
+      http:
+        paths:
+          - backend:
+              serviceName: apidemo
+              servicePort: http
