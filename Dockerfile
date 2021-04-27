@@ -1,14 +1,10 @@
 FROM adoptopenjdk/openjdk11:jre as runtime
 
-
-
-RUN useradd -ms /bin/bash appuser
-
 ARG JAR_FILE
 ADD $JAR_FILE /app.jar
 
 EXPOSE 8080
 
-USER appuser
+USER nobody
 
 CMD [ "java" , "-jar" ,"/app.jar"]
