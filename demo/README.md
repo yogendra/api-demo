@@ -5,19 +5,19 @@
 1. Create a deployment directory
 
     ```bash
-    mkdir -p apidemo
+    mkdir -p api-demo
     ```
 
 1. Generate deployment yaml
 
     ```bash
-    kubectl create deployment apidemo --image=docker.io/yogendra/api-demo:latest --dry-run=client -o yaml > apidemo/01-apidemo-deployment.yaml
+    kubectl create deployment api-demo --image=ghcr.io/yogendra/api-demo:latest --dry-run=client -o yaml > api-demo/01-deployment.yaml
     ```
 
     1. **create**: Create a resource
     2. **deployment**: Type of resource to create
-    3. **apidemo**: Name of the resource
-    4. **--image=yogendra/apidemo**: Image to use for this deployment 
+    3. **api-demo**: Name of the resource
+    4. **--image=yogendra/api-demo**: Image to use for this deployment 
     5. **--dry-run=client**: Tells kubectl not do any change only perform a dry run on the client side.
     6. **-o yaml**: Output the config in YAML format
 
@@ -28,21 +28,21 @@
     kind: Deployment
     metadata:
       labels:
-        app: apidemo
-      name: apidemo
+        app: api-demo
+      name: api-demo
     spec:
       replicas: 1
       selector:
         matchLabels:
-          app: apidemo
+          app: api-demo
       template:
         metadata:
           labels:
-            app: apidemo
+            app: api-demo
         spec:
           containers:
-            - image: docker.io/yogendra/api-demo:latest
-              name: apidemo
+            - image: ghcr.io/yogendra/api-demo:latest
+              name: api-demo
               ports:
                 - name: http
                   protocol: TCP
@@ -59,13 +59,13 @@
 1. Apply to cluster
 
     ```bash
-    kubectl apply -f apidemo/01-apidemo-deployment.yaml
+    kubectl apply -f api-demo/01-deployment.yaml
     ```
 
 1. Generate service yaml
 
     ```bash
-    kubectl expose deployment apidemo --port 8080 --target-port 8080 --dry-run=client -o yaml > apidemo/02-apidemo-service.yaml
+    kubectl expose deployment api-demo --port 8080 --target-port 8080 --dry-run=client -o yaml > api-demo/02-service.yaml
     ```
 
 1. Edit the service file as per your need. Here is a sample
@@ -74,11 +74,11 @@
     apiVersion: v1
     kind: Service
     metadata:
-      name: apidemo
+      name: api-demo
     spec:
       type: ClusterIP
       selector:
-        app: apidemo
+        app: api-demo
       ports:
         - protocol: TCP
           port: 8080
@@ -91,18 +91,18 @@
 1. Apply service
 
     ```bash
-    kubectl apply -f apidemo/02-apidemo-service.yaml
+    kubectl apply -f api-demo/02-service.yaml
     ```
 
-1. Create am ingress `apidemo/03-apidemo-ingress.yaml` file with following content ingress
+1. Create am ingress `api-demo/03-ingress.yaml` file with following content ingress
 
     ```yaml
     apiVersion: networking.k8s.io/v1beta1
     kind: Ingress
     metadata:
-      name: apidemo
+      name: api-demo
       labels:
-        app: apidemo
+        app: api-demo
       annotations:
         ingress.kubernetes.io/force-ssl-redirect: "true"
         kubernetes.io/ingress.class: contour
@@ -110,15 +110,15 @@
         kubernetes.io/tls-acme: "true"
     spec:
       tls:
-        - secretName: apidemo-https-secret
+        - secretName: api-demo-https-secret
           hosts:
-            - apidemo.techtalk.cna-demo.ga
+            - api-demo.techtalk.cna-demo.ga
       rules:
-        - host: apidemo.techtalk.cna-demo.ga
+        - host: api-demo.techtalk.cna-demo.ga
           http:
             paths:
               - backend:
-                  serviceName: apidemo
+                  serviceName: api-demo
                   servicePort: http
 
     ```
@@ -126,13 +126,10 @@
 1. Apply ingress
 
     ```bash
-    kubectl apply -f apidemo/03-apidemo-ingress.yaml
+    kubectl apply -f api-demo/03-ingress.yaml
     ```
 
 ## Deploy with Yaml
 
-```
-kubectl apply -f mkdir -p apidemo
-```
 
 ## Helm Chart Demo
