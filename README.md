@@ -1,14 +1,20 @@
 # API Demo Project
 
-# Getting Started
+## Getting Started
 
-```
-git clone https://github.com/yogendra/apidemo.git
+```bash
+git clone https://github.com/yogendra/api-demo.git
 cd apidemo
 ./mvnw spring-boot:run
 
 ```
 
+
+Build docker image
+
+```bash
+./mvnw spring-boot:build-image
+```
 
 ## Monitoring
 
@@ -16,7 +22,7 @@ Test application monitoring using local Prometheus and Grafana.
 
 ![](monitoring/grafana.png)
 
--   Run Prometheus locally
+- Run Prometheus locally
 
     ```bash
     docker run -d --rm\
@@ -30,6 +36,7 @@ Test application monitoring using local Prometheus and Grafana.
     ```
 
 - Run Grafana locally
+
     ```bash
     docker run --rm -d \
         --name=grafana \
@@ -41,8 +48,9 @@ Test application monitoring using local Prometheus and Grafana.
         grafana/grafana 
     ```
 
-
 ## Logging
+
+TODO
 
 
 ### Reference Documentation
