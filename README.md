@@ -2,25 +2,35 @@
 
 ## Getting Started
 
+Simple git clone, change dir and run
+
 ```bash
+
 git clone https://github.com/yogendra/api-demo.git
 cd apidemo
 ./mvnw spring-boot:run
 
 ```
 
-
 Build docker image
 
 ```bash
+
 ./mvnw spring-boot:build-image
+
+```
+
+Push docker image
+
+```bash
+docker push ghcr.io/yogendra/api-demo:latest
 ```
 
 ## Monitoring
 
 Test application monitoring using local Prometheus and Grafana.
 
-![](monitoring/grafana.png)
+![Monitoring](monitoring/grafana.png)
 
 - Run Prometheus locally
 
