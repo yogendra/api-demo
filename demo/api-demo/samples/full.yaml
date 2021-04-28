@@ -43,11 +43,11 @@ spec:
       targetPort: 8080
       name: http
 ---
-apiVersion: networking.k8s.io/v1beta1
+
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: api-demo
-  namespace: api-demo
   labels:
     app: api-demo
   annotations:
@@ -59,11 +59,15 @@ spec:
   tls:
     - secretName: api-demo-https-secret
       hosts:
-        - api-demo.apps.demo.wepositive.org
+        - api-demo.techtalk.cna-demo.ga
   rules:
-    - host: api-demo.apps.demo.wepositive.org
+    - host: api-demo.techtalk.cna-demo.ga
       http:
         paths:
-          - backend:
-              serviceName: api-demo
-              servicePort: http
+          - path: / 
+            pathType: Prefix
+            backend:
+              service:
+                name: api-demo
+                port: 
+                    name: http
