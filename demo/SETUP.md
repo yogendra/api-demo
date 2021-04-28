@@ -28,7 +28,7 @@
         --group=system:authenticated
     ```
 
-1. Create a privileged PSP
+1. Create a privileged PSP and Cluser Role
 
     ```bash
     kubectl apply -f setup/privileged-psp.yaml
@@ -86,7 +86,7 @@
         helm install registry harbor/harbor -f setup/harbor.yaml -n harbor
         ```
 
-1. Install EFK
+1. Install log aggregation system - Elastic,Fluent bit and Kibana (EFK)
 
     1. Install Elastic Operator
 
@@ -129,7 +129,7 @@
     1. Quick test elastic
 
         ```bash
-        curl -u "elastic:$PASSWORD" https://logs.techtalk.cna-demo.ga"        
+        curl -u "elastic:$PASSWORD" https://logs.techtalk.cna-demo.ga  
         ```
 
         *Output:*
@@ -154,8 +154,77 @@
         }
         ```
 
-    1. Quick test Kibana
+    1. Quick test [Kibana](https://log-ui.techtalk.cna-demo.ga/). User the `elastic` username and password from earlier steps.
 
-    
+    1. Create fluentbit user
+
+        ```bash
+        kubectl exec -n elastic pod/logging-es-default-0 -c elasticsearch -it -- elasticsearch-users useradd fluentbit -p "VMware1!" -r superuser
+        ```
+
+    1. Install fluentbit
+
+        ```bash
+        kubectl apply -f setup/fluent-bit.yaml
+        ```
+
+    1. Configure Kibana
+        1. Go to [Kibana/Management/Stack Management/Kibana/Index Pattern/Create index pattern](https://log-ui.techtalk.cna-demo.ga/app/management/kibana/indexPatterns/create)
+        1. Login with `elastic` user and setup log dashboard
+        1. Enter **Index pattern name** as `logstash-*`
+        1. Click **Next**
+        1. On Step 2, select **Time field** as `@timestamp`
+        1. Click **Create index pattern**
+        1. Now go to [Kibana/Analytics/Discover](https://log-ui.techtalk.cna-demo.ga/app/discover)
+        1. Select `logstash-*` index in the index patter box
+
+            ![Kibana Logs View](setup/images/kibana-logs.png)
+
+1. Install Monitoring - Prometheus and Grafans
+
+    1. create namespace
+
+        ```bash
+        kubectl create namespace prometheus
+        ```
+
+    1. Install prometheus operator via helm
+
+        ```bash
+        helm install prometheus stable/prometheus-operator --namespace prometheus
+        ```
+
+    1. Check the installation
+
+        ```bash
+        kubectl port-forward -n prometheus prometheus-prometheus-prometheus-oper-prometheus-0 9090
+        ```
+
+        Open browser at [http://localhost:9090/](http://localhost:9090/)
+
+    1. Check grafan
+
+        ```bash
+        kubectl port-forward -n prometheus prometheus-grafana-5c5885d488-b9mlj 3000
+        ```
+
+        Get password form the secret
+
+        **mac copy**
+
+        ```bash
+        kubectl get secret --namespace prometheus prometheus-grafana -o go-template='{{index  .data "admin-password"| base64decode }}' | pbcopy
+        ```
 
 All Set! Goto [Demo Guide](README)
+
+
+
+References:
+
+* [Prometheus Operator in Kubernetes](https://www.magalix.com/blog/monitoring-of-kubernetes-cluster-through-prometheus-and-grafana)
+* [Fluent-bit configuration](https://docs.fluentbit.io/manual/pipeline/outputs/elasticsearch#configuration-file)
+* [Elastic Quickstart](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-quickstart.html)
+* [Metrics Server](https://github.com/kubernetes-sigs/metrics-server)
+* [Cert Manager](https://github.com/jetstack/cert-manager)
+* [Contour Installation](https://projectcontour.io/getting-started/)
