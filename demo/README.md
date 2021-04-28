@@ -1,12 +1,24 @@
 # API Demo - Deploys
 
+Setup your cluster with following:
+
+1. Setup registry credentials
+1. Metrics Server
+1. Privileged PSP and Role
+1. Cert Manager
+1. Cluster Issuer for Letencrypt CA
+1. Contour
+1. EFK Stack
+1. Prometheus
+1. Grafana
+1. Jenkins
+1. Harbor
+1. Point DNS (techtalk.cna-demo.ga) to the LB of Contour (Envoy) Service
+
+You can follow instruction in [Setup Guide](SETUP)
+
 ## Create YAMLS
 
-1. Create a deployment directory
-
-    ```bash
-    mkdir -p api-demo
-    ```
 
 1. Generate deployment yaml
 
@@ -97,7 +109,7 @@
 1. Create am ingress `api-demo/03-ingress.yaml` file with following content ingress
 
     ```yaml
-    apiVersion: networking.k8s.io/v1beta1
+    apiVersion: networking.k8s.io/v1
     kind: Ingress
     metadata:
       name: api-demo
@@ -117,9 +129,13 @@
         - host: api-demo.techtalk.cna-demo.ga
           http:
             paths:
-              - backend:
-                  serviceName: api-demo
-                  servicePort: http
+              - path: / 
+                pathType: Prefix
+                backend:
+                  service:
+                    name: api-demo
+                    port: 
+                        name: http
 
     ```
 
@@ -128,8 +144,5 @@
     ```bash
     kubectl apply -f api-demo/03-ingress.yaml
     ```
-
-## Deploy with Yaml
-
 
 ## Helm Chart Demo
