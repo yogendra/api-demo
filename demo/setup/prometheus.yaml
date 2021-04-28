@@ -1,0 +1,30 @@
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-grafana
+  namespace: prometheus
+  labels:
+    app: prometheus-grafana
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - secretName: prometheus-grafana-https-secret
+      hosts:
+        - monitor.techtalk.cna-demo.ga
+  rules:
+    - host: monitor.techtalk.cna-demo.ga
+      http:
+        paths:
+          - path: / 
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-grafana
+                port: 
+                    name: service

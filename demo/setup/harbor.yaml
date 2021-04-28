@@ -1,0 +1,18 @@
+externalURL: https://harbor.techtalk.cna-demo.ga
+expose:
+  type: ingress
+  tls:
+    enabled: true
+    secretName: harbor-tls
+    auto:
+        commonName: harbor.techtalk.cna-demo.ga
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      ingress.kubernetes.io/force-ssl-redirect: "true"
+      kubernetes.io/ingress.class: contour
+      kubernetes.io/tls-acme: "true"
+    hosts:
+      core: harbor.techtalk.cna-demo.ga
+      notary: notrary.harbor.techtalk.cna-demo.ga
+harborAdminPassword: VMware1!
